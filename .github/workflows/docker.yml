@@ -41,10 +41,31 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push multi-platform Docker image
+      - name: Build and push arm64 Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ env.GHCR_IMAGE }},${{ env.ACR_IMAGE }}
+          platforms: linux/arm64
+          push: false
+          tags: ${{ env.GHCR_IMAGE }}-arm64,${{ env.ACR_IMAGE }}-arm64
+
+      - name: Clean up Docker Buildx builders
+        run: docker buildx prune --filter type=exec.cache -f
+
+      - name: Build and push amd64 Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64
+          push: false
+          tags: ${{ env.GHCR_IMAGE }}-amd64,${{ env.ACR_IMAGE }}-amd64
+
+      - name: Clean up Docker Buildx builders
+        run: docker buildx prune --filter type=exec.cache -f
+
+      - name: Create and push multi-architecture manifest
+        run: |
+          docker buildx imagetools create -t ${{ env.GHCR_IMAGE }} ${{ env.GHCR_IMAGE }}-amd64 ${{ env.GHCR_IMAGE }}-arm64
+          docker push ${{ env.GHCR_IMAGE }}
+          docker buildx imagetools create -t ${{ env.ACR_IMAGE }} ${{ env.ACR_IMAGE }}-amd64 ${{ env.ACR_IMAGE }}-arm64
+          docker push ${{ env.ACR_IMAGE }}
