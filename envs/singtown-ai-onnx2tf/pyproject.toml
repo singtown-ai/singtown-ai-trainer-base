@@ -1,0 +1,20 @@
+[project]
+name = "singtown-ai-onnx2tf"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "ai-edge-litert==1.2.0",
+    "flatbuffers>=23.1.21",
+    "ml-dtypes==0.5.1",
+    "onnx==1.17.0",
+    "onnx-graphsurgeon>=0.5.8",
+    "onnx2tf>=1.28.3",
+    "onnxruntime==1.23.2",
+    "onnxsim==0.4.33",
+    "psutil==5.9.5",
+    "simple-onnx-processing-tools>=1.1.32",
+    "tensorflow==2.19.0",
+    "tf-keras==2.19.0",
+]
